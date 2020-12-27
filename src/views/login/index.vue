@@ -1,0 +1,177 @@
+<template>
+  <div class="login-container">
+    <a-row>
+      <a-col :xs="0" :md="0" :sm="12" :lg="14" :xl="16"></a-col>
+      <a-col :xs="24" :sm="24" :md="12" :lg="10" :xl="6">
+        <div class="login-container-form">
+          <div class="login-container-hello">Welcome!</div>
+          <div class="login-container-title">欢迎来到 {{ title }}</div>
+          <a-form :model="form" @submit="handleSubmit" @submit.prevent>
+            <a-form-item>
+              <a-input v-model:value="form.username" placeholder="Username">
+                <template v-slot:prefix>
+                  <UserOutlined style="color: rgba(0, 0, 0, 0.25)" />
+                </template>
+              </a-input>
+            </a-form-item>
+            <a-form-item>
+              <a-input
+                v-model:value="form.password"
+                type="password"
+                placeholder="Password"
+              >
+                <template v-slot:prefix>
+                  <LockOutlined style="color: rgba(0, 0, 0, 0.25)" />
+                </template>
+              </a-input>
+            </a-form-item>
+            <a-form-item v-if="isLogin">
+              <a-button
+                type="primary"
+                html-type="submit"
+                :disabled="form.username === '' || form.password === ''"
+              >
+                登录
+              </a-button>
+              <a-button style="margin-top: 10px" @click="isLogin = false">
+                没有账号
+              </a-button>
+            </a-form-item>
+            <a-form-item v-else>
+              <a-button
+                type="info"
+                html-type="submit"
+                :disabled="form.username === '' || form.password === ''"
+              >
+                注册
+              </a-button>
+            </a-form-item>
+          </a-form>
+        </div>
+      </a-col>
+    </a-row>
+    <div class="login-container-tips">基于vue + ant-design-vue开发</div>
+  </div>
+</template>
+<script>
+  import { dependencies, devDependencies } from '*/package.json'
+  import { mapActions, mapGetters } from 'vuex'
+  import { UserOutlined, LockOutlined } from '@ant-design/icons-vue'
+  import { register } from '@/api/user'
+  import { message } from 'ant-design-vue'
+
+  export default {
+    name: 'Login',
+    components: {
+      UserOutlined,
+      LockOutlined,
+    },
+    data() {
+      return {
+        form: {
+          username: '',
+          password: '',
+        },
+        isLogin: true,
+        redirect: undefined,
+        dependencies: dependencies,
+        devDependencies: devDependencies,
+      }
+    },
+    computed: {
+      ...mapGetters({
+        logo: 'settings/logo',
+        title: 'settings/title',
+      }),
+    },
+    watch: {
+      $route: {
+        handler(route) {
+          this.redirect = (route.query && route.query.redirect) || '/'
+        },
+        immediate: true,
+      },
+    },
+    mounted() {
+      // this.form.username = 'chr'
+      // this.form.password = '123456'
+      /*  setTimeout(() => {
+        this.handleSubmit()
+      }, 3000) */
+    },
+    methods: {
+      ...mapActions({
+        login: 'user/login',
+      }),
+      handleRoute() {
+        return this.redirect === '/404' || this.redirect === '/403'
+          ? '/'
+          : this.redirect
+      },
+      async handleSubmit() {
+        if (this.isLogin == false) {
+          register(this.form).then((response) => {
+            message.success(response.msg)
+            this.form = {
+              username: '',
+              password: '',
+            }
+            this.isLogin = true
+          })
+          return false
+        }
+        await this.login(this.form)
+        await this.$router.push(this.handleRoute())
+      },
+    },
+  }
+</script>
+<style lang="less">
+  .login-container {
+    width: 100%;
+    height: 100vh;
+    background: url('~@/assets/login_images/login_background.png');
+    background-size: cover;
+    &-form {
+      width: calc(100% - 40px);
+      height: 400px;
+      padding: 4vh;
+      margin-top: calc((100vh - 380px) / 2);
+      margin-right: 20px;
+      margin-left: 20px;
+      background: url('~@/assets/login_images/login_form.png');
+      background-size: 100% 100%;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px 0 rgba(7, 17, 27, 0.06);
+    }
+    &-hello {
+      font-size: 32px;
+      color: #fff;
+    }
+    &-title {
+      margin-bottom: 30px;
+      font-size: 20px;
+      color: #fff;
+    }
+    &-tips {
+      position: fixed;
+      bottom: @vab-margin;
+      width: 100%;
+      height: 40px;
+      color: rgba(255, 255, 255, 0.856);
+      text-align: center;
+    }
+    .ant-col {
+      width: 100%;
+      padding: 0 10px 0 10px;
+    }
+    .ant-input {
+      height: 35px;
+    }
+    .ant-btn {
+      width: 100%;
+      height: 45px;
+      border-radius: 99px;
+    }
+  }
+</style>
