@@ -38,10 +38,16 @@
           <a-divider type="vertical" />
           <a @click="deleteCustomer(record)">删除</a>
           <a-divider type="vertical" />
-          <a class="ant-dropdown-link">
-            更多操作
+          <router-link
+            class="ant-dropdown-link"
+            :to="{
+              path: '/contract/table',
+              query: { customerId: record.customerId },
+            }"
+          >
+            查看合同
             <down-outlined />
-          </a>
+          </router-link>
         </span>
       </template>
       <template #expandedRowRender="{ record }">

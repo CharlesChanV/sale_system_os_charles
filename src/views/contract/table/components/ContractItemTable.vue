@@ -105,7 +105,7 @@
         type: Number,
       },
     },
-    created() {
+    mounted() {
       this.fetchContractItemList()
     },
     methods: {

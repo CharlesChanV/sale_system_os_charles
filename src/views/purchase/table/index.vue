@@ -60,9 +60,13 @@
         <span>
           <a @click="editpurchase(record)">预览</a>
           <a-divider type="vertical" />
-          <a @click="payPurchase(record)">支付</a>
+          <a v-if="record.payStatus == 0" @click="payPurchase(record)">支付</a>
+          <span v-else style="color: grey">已支付</span>
           <a-divider type="vertical" />
-          <a @click="deliverPurchase(record)">发货</a>
+          <a v-if="record.deliverStatus == 0" @click="deliverPurchase(record)">
+            发货
+          </a>
+          <a v-else @click="checkLogistics(record.logisticsId)">查看物流</a>
           <a-divider type="vertical" />
           <a @click="deletePurchase(record)">删除</a>
           <a-divider type="vertical" />
@@ -173,6 +177,43 @@
         <!-- </a-form-item> -->
       </a-form>
     </a-modal>
+    <a-modal
+      v-model:visible="logisticsVisible"
+      title="查看物流"
+      @ok="logisticsVisible = false"
+    >
+      <!-- <pre>{{ currentLogistics }}</pre> -->
+      <!-- <div>创建时间:{{ currentLogistics.createTime }}</div> -->
+      <a-descriptions title="物流信息" layout="vertical">
+        <a-descriptions-item label="物流公司">
+          {{ currentLogistics.companyName }}
+        </a-descriptions-item>
+        <a-descriptions-item label="物流费用">
+          {{ currentLogistics.fee }}
+        </a-descriptions-item>
+        <a-descriptions-item label="物流编号">
+          {{ currentLogistics.logisticsNo }}
+        </a-descriptions-item>
+        <a-descriptions-item label="发货人">
+          {{ currentLogistics.senderName }}
+        </a-descriptions-item>
+        <a-descriptions-item label="发货联系方式">
+          {{ currentLogistics.senderPhone }}
+        </a-descriptions-item>
+        <a-descriptions-item label="发货地址">
+          {{ currentLogistics.senderAddress }}
+        </a-descriptions-item>
+        <a-descriptions-item label="收货人">
+          {{ currentLogistics.addresseeName }}
+        </a-descriptions-item>
+        <a-descriptions-item label="收货联系方式">
+          {{ currentLogistics.addresseePhone }}
+        </a-descriptions-item>
+        <a-descriptions-item label="收货地址">
+          {{ currentLogistics.addresseeAddress }}
+        </a-descriptions-item>
+      </a-descriptions>
+    </a-modal>
   </div>
 </template>
 <script>
@@ -194,6 +235,7 @@
   } from '@/api/purchase'
   import { getSalespersonById } from '@/api/salesperson'
   import { getCustomerById } from '@/api/customer'
+  import { getLogisticsById } from '@/api/logistics'
   import { message, Modal } from 'ant-design-vue'
   const columns = [
     {
@@ -269,6 +311,16 @@
       title: '单价',
       dataIndex: 'perPrice',
       key: 'perPrice',
+    },
+    {
+      title: '数量',
+      dataIndex: 'count',
+      key: 'count',
+    },
+    {
+      title: '价格',
+      dataIndex: 'price',
+      key: 'price',
     },
   ]
 
@@ -391,11 +443,17 @@
         console.log(errors)
       },
       payPurchase(record) {
+        let price = 0
+        if (record.purchaseItemList && record.purchaseItemList.length > 0) {
+          record.purchaseItemList.map((item) => {
+            price += item.perPrice * item.count
+          })
+        }
         const that = this
         Modal.confirm({
           title: '确认支付采购清单?',
           icon: createVNode(ExclamationCircleOutlined),
-          content: '支付后采购清单将不可再次修改',
+          content: `总价：${price}元`,
           onOk() {
             // return new Promise((resolve, reject) => {
             //   setTimeout(Math.random() > 0.5 ? resolve : reject, 1000)
@@ -424,6 +482,14 @@
             })
           },
           onCancel() {},
+        })
+      },
+      checkLogistics(logisticsId) {
+        // message.success('检查物流' + logisticsId)
+        getLogisticsById(logisticsId).then((response) => {
+          message.success(response.msg)
+          this.currentLogistics = response.data
+          this.logisticsVisible = true
         })
       },
     },
@@ -455,6 +521,8 @@
         editVisible: false,
         purchaseForm: {},
         deliverStatusDescription,
+        currentLogistics: {},
+        logisticsVisible: false,
       }
     },
   }

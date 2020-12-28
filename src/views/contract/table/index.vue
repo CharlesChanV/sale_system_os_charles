@@ -26,6 +26,30 @@
           </template>
         </a-input-search>
       </a-form-item>
+      <a-form-item>
+        <a-input-search
+          v-model:value="queryParam.customerId"
+          type="text"
+          placeholder="客户ID"
+          @search="onSearch"
+        >
+          <template #prefix>
+            <UserOutlined style="color: rgba(0, 0, 0, 0.25)" />
+          </template>
+        </a-input-search>
+      </a-form-item>
+      <a-form-item>
+        <a-input-search
+          v-model:value="queryParam.salespersonId"
+          type="text"
+          placeholder="销售人员ID"
+          @search="onSearch"
+        >
+          <template #prefix>
+            <UserOutlined style="color: rgba(0, 0, 0, 0.25)" />
+          </template>
+        </a-input-search>
+      </a-form-item>
     </a-form>
     <!-- 合同列表 -->
     <a-table
@@ -147,6 +171,7 @@
       </a-form>
     </a-modal>
     <a-modal
+      v-if="addPurchaseVisible"
       v-model:visible="addPurchaseVisible"
       title="创建采购清单"
       :width="550"
@@ -247,7 +272,16 @@
       LockOutlined,
       ContractItemTable,
     },
-    created() {
+    // created() {
+    // },
+    mounted() {
+      console.log(this.$route.query)
+      if (this.$route.query.customerId) {
+        this.queryParam.customerId = this.$route.query.customerId
+      }
+      if (this.$route.query.salespersonId) {
+        this.queryParam.salespersonId = this.$route.query.salespersonId
+      }
       this.fetchContractList()
     },
     methods: {
@@ -272,15 +306,15 @@
           message.success(response.msg)
           this.fetchContractList()
         })
-        console.log(record)
+        // console.log(record)
         // message.info('deleteContract')
       },
       onShowSizeChange(current, pageSize) {
         console.log(current, pageSize)
       },
       pageChange(page, pageSize) {
-        console.log(page, pageSize)
-        this.fetchContractList(page.current)
+        // console.log(page, pageSize)
+        this.fetchContractList(page.current, pageSize)
         this.pagination.current = page.current
         this.pagination.pageSize = page.pageSize
       },

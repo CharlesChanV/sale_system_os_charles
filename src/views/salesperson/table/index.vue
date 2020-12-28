@@ -1,11 +1,11 @@
 <template>
   <div class="index-container">
     <a-alert message="销售人员列表板块"></a-alert>
-    <!-- <a-form layout="inline">
+    <a-form layout="inline">
       <a-form-item>
         <a-input-search
-          v-model:value="queryParam.SalespersonName"
-          placeholder="合同名称"
+          v-model:value="queryParam.name"
+          placeholder="销售人员姓名"
           @search="onSearch"
         >
           <template #prefix>
@@ -15,9 +15,20 @@
       </a-form-item>
       <a-form-item>
         <a-input-search
-          v-model:value="queryParam.firstParty"
+          v-model:value="queryParam.email"
+          placeholder="销售人员邮箱"
+          @search="onSearch"
+        >
+          <template #prefix>
+            <UserOutlined style="color: rgba(0, 0, 0, 0.25)" />
+          </template>
+        </a-input-search>
+      </a-form-item>
+      <a-form-item>
+        <a-input-search
+          v-model:value="queryParam.phone"
           type="text"
-          placeholder="合同甲方"
+          placeholder="手机号"
           @search="onSearch"
         >
           <template #prefix>
@@ -25,7 +36,31 @@
           </template>
         </a-input-search>
       </a-form-item>
-    </a-form> -->
+      <a-form-item>
+        <a-input-search
+          v-model:value="queryParam.salespersonId"
+          type="text"
+          placeholder="销售人员ID"
+          @search="onSearch"
+        >
+          <template #prefix>
+            <UserOutlined style="color: rgba(0, 0, 0, 0.25)" />
+          </template>
+        </a-input-search>
+      </a-form-item>
+      <a-form-item>
+        <a-input-search
+          v-model:value="queryParam.userId"
+          type="text"
+          placeholder="用户ID"
+          @search="onSearch"
+        >
+          <template #prefix>
+            <UserOutlined style="color: rgba(0, 0, 0, 0.25)" />
+          </template>
+        </a-input-search>
+      </a-form-item>
+    </a-form>
     <a-table
       :columns="columns"
       :data-source="salespersonList"
@@ -38,10 +73,16 @@
           <a-divider type="vertical" />
           <a @click="deleteSalesperson(record)">删除</a>
           <a-divider type="vertical" />
-          <a class="ant-dropdown-link">
-            更多操作
+          <router-link
+            class="ant-dropdown-link"
+            :to="{
+              path: '/contract/table',
+              query: { salespersonId: record.salespersonId },
+            }"
+          >
+            查看合同
             <down-outlined />
-          </a>
+          </router-link>
         </span>
       </template>
       <template #expandedRowRender="{ record }">
@@ -215,6 +256,7 @@
           // salespersonId: '',
           name: '',
           phone: '',
+          email: '',
           salespersonId: '',
           userId: '',
         },

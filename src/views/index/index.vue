@@ -1,15 +1,17 @@
 <template>
   <div class="index-container">
     <!-- <version-information /> -->
-    <div class="welcome"><text>欢迎你使用线上销售系统</text></div>
+    <!-- <div class="welcome"><text>欢迎你使用线上销售系统</text></div> -->
+    <DataShow />
   </div>
 </template>
 
 <script>
   // import VersionInformation from './components/VersionInformation'
+  import DataShow from './components/DataShow'
   export default {
     name: 'Index',
-    // components: { VersionInformation },
+    components: { DataShow },
   }
 </script>
 <style>
