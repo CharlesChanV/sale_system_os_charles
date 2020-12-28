@@ -139,7 +139,34 @@
               </a-input-search>
             </a-form-item>
           </a-form>
-          <pre>{{ searchStatisticsData }}</pre>
+          <div>
+            <a-statistic
+              title="合同数"
+              :value="
+                searchStatisticsData.contractCount == null
+                  ? '/'
+                  : searchStatisticsData.contractCount
+              "
+              style="margin-right: 50px"
+            />
+            <a-statistic
+              title="采购清单数"
+              :value="
+                searchStatisticsData.purchaseCount == null
+                  ? '/'
+                  : searchStatisticsData.purchaseCount
+              "
+            />
+            <a-statistic
+              title="客户数"
+              :value="
+                searchStatisticsData.customerCount == null
+                  ? '/'
+                  : searchStatisticsData.customerCount
+              "
+            />
+          </div>
+          <!-- <pre>{{ searchStatisticsData }}</pre> -->
         </a-card>
       </a-col>
       <a-col :span="12">
@@ -157,7 +184,42 @@
               </a-input-search>
             </a-form-item>
           </a-form>
-          <pre>{{ searchGoodsStatisticsData }}</pre>
+          <div>
+            <a-statistic
+              title="总售出量"
+              :value="
+                searchGoodsStatisticsData.totalCount == null
+                  ? '/'
+                  : searchGoodsStatisticsData.totalCount
+              "
+              style="margin-right: 50px"
+            />
+            <a-statistic
+              title="总售出额"
+              :value="
+                searchGoodsStatisticsData.totalPrice == null
+                  ? '/'
+                  : searchGoodsStatisticsData.totalPrice
+              "
+            />
+            <a-statistic
+              title="发货单数目"
+              :value="
+                searchGoodsStatisticsData.purchaseItemCount == null
+                  ? '/'
+                  : searchGoodsStatisticsData.purchaseItemCount
+              "
+            />
+            <a-statistic
+              title="采购清单数目"
+              :value="
+                searchGoodsStatisticsData.purchaseCount == null
+                  ? '/'
+                  : searchGoodsStatisticsData.purchaseCount
+              "
+            />
+          </div>
+          <!-- <pre>{{ searchGoodsStatisticsData }}</pre> -->
         </a-card>
       </a-col>
     </a-row>
@@ -172,6 +234,8 @@
     searchGoodsStatistics,
   } from '@/api/statistics'
   import { message } from 'ant-design-vue'
+  // import { Bar } from '@antv/g2plot'
+
   export default {
     components: {
       ArrowUpOutlined,
