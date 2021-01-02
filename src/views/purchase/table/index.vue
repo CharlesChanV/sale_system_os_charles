@@ -84,7 +84,15 @@
           :columns="purchaseItemColumns"
           :data-source="record.purchaseItemList"
           :pagination="false"
-        ></a-table>
+        >
+          <template #deliverStatus="{}">
+            {{
+              record.deliverStatus == 0
+                ? '未发货'
+                : '已发货 | 物流ID: ' + record.logisticsId
+            }}
+          </template>
+        </a-table>
         <a-divider type="vertical" />
       </template>
     </a-table>
@@ -321,6 +329,12 @@
       title: '价格',
       dataIndex: 'price',
       key: 'price',
+    },
+    {
+      title: '发货状态',
+      dataIndex: 'deliverStatus',
+      key: 'deliverStatus',
+      slots: { customRender: 'deliverStatus' },
     },
   ]
 

@@ -351,7 +351,7 @@
         },
         goodsQueryParam: {
           name: '',
-          status: undefined,
+          status: 1,
         },
         canModifyContractItemList: false,
         // salespersonData: [],
